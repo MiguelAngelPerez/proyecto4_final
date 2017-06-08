@@ -1,0 +1,82 @@
+ArrayList burbujas = new ArrayList();
+boolean lineas = false;
+boolean click;
+
+
+void setup() {
+  size(640, 640);
+  frameRate(32);
+  noStroke();
+  
+  
+  for (int i = 0; i <= 100; i++) {
+    burbujas.add(new Burbu(new PVector(random(width), random(height)), random(-30, 30)));
+  }
+}
+
+void draw() {
+  background(0);
+
+  for (int i = 0; i < burbujas.size(); i++) {
+    Burbu b = (Burbu) burbujas.get(i);
+    if (lineas) {
+      for (int q = 0; q < burbujas.size(); q++) {
+        Burbu b2 = (Burbu) burbujas.get(q);
+        float d = PVector.dist(b.loc, b2.loc);
+        if (d < 100) {
+          stroke(255);
+          line(b.loc.x, b.loc.y, b2.loc.x, b2.loc.y);
+        }
+      }
+    }
+    b.draw();
+    b.moverBubuja();
+    b.boundaries();
+  }
+}
+
+void mousePressed() {
+  if (lineas && click == false) {
+    lineas = false;
+    click = true;
+  }
+  else if (!lineas && click == false) {
+    lineas = true;
+    click = true;
+  }
+}
+
+class Burbu {
+  PVector loc;
+  PVector acc;
+  PVector vel;
+
+  float mass = 1;
+  float size;
+
+  Burbu(PVector loc_, float size_) {
+    loc = loc_;
+    vel = new PVector(random(-3, 8), random(-8, 3));
+    size = size_;
+  }
+
+  void draw() {
+    ellipse(loc.x, loc.y, size, size);
+    fill(0);
+    ellipse(loc.x, loc.y, size, size);
+  }
+
+  void moverBubuja() {
+    loc.add(vel);
+  }
+  void boundaries() {
+    if (loc.y < 0)
+      vel.y *= -1;
+    if (loc.y > height)
+      vel.y *= -1;
+    if (loc.x > width)
+      vel.x *= -1;
+    if (loc.x < 0)
+      vel.x *= -1;
+  }
+}
